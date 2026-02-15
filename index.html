@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Läxläs</title>
+    <link rel="icon" href="assets/star.svg" type="image/svg+xml" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.cdnfonts.com/css/open-dyslexic"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <main id="app">
+      <!-- ===== VIEW: HOME ===== -->
+      <section id="view-home" class="view active">
+        <header class="app-header">
+          <div class="app-title">
+            <img src="assets/star.svg" alt="" class="app-icon" />
+            <h1>Läxläs</h1>
+          </div>
+        </header>
+
+        <div class="content">
+          <p class="subtitle">Välj en lista att öva:</p>
+
+          <div id="list-container"></div>
+
+          <div class="home-actions">
+            <button id="btn-new-list" class="btn btn-primary btn-large">
+              + Ny lista
+            </button>
+            <button id="btn-settings" class="btn btn-secondary">
+              Inställningar
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== VIEW: EDITOR ===== -->
+      <section id="view-editor" class="view">
+        <header class="app-header">
+          <button class="btn-back" data-navigate="home" aria-label="Tillbaka">
+            &larr;
+          </button>
+          <h1 id="editor-title">Ny lista</h1>
+        </header>
+
+        <div class="content">
+          <div class="form-group">
+            <label for="list-name">Listnamn</label>
+            <input
+              type="text"
+              id="list-name"
+              placeholder="t.ex. Vecka 7"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="list-language">Språk</label>
+            <select id="list-language">
+              <option value="sv">Svenska</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Ord</label>
+            <div id="word-rows"></div>
+            <button id="btn-add-word" class="btn btn-secondary btn-small">
+              + Lägg till ord
+            </button>
+          </div>
+
+          <div class="editor-actions">
+            <button id="btn-save-list" class="btn btn-primary btn-large">
+              Spara
+            </button>
+            <button id="btn-delete-list" class="btn btn-danger btn-small">
+              Radera lista
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== VIEW: MODE SELECTOR ===== -->
+      <section id="view-mode" class="view">
+        <header class="app-header">
+          <button class="btn-back" data-navigate="home" aria-label="Tillbaka">
+            &larr;
+          </button>
+          <h1 id="mode-title">Öva</h1>
+        </header>
+
+        <div class="content centered">
+          <p class="subtitle">Hur vill du öva?</p>
+
+          <div class="mode-choices">
+            <button id="btn-mode-computer" class="btn-mode">
+              <span class="mode-icon">&#9000;</span>
+              <span class="mode-label">Skriv på datorn</span>
+            </button>
+
+            <button id="btn-mode-paper" class="btn-mode">
+              <span class="mode-icon">&#9998;</span>
+              <span class="mode-label">Skriv på papper</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== VIEW: PRACTICE ===== -->
+      <section id="view-practice" class="view">
+        <header class="app-header">
+          <button class="btn-back" data-navigate="home" aria-label="Tillbaka">
+            &larr;
+          </button>
+          <h1 id="practice-title">Öva</h1>
+        </header>
+
+        <div class="content centered">
+          <div class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+          <p id="practice-counter" class="practice-counter"></p>
+
+          <button id="btn-speak" class="btn-speak" aria-label="Lyssna på ordet">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+              <path
+                d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
+              />
+            </svg>
+            <span>Tryck för att lyssna</span>
+          </button>
+
+          <!-- Computer mode: input -->
+          <div id="practice-input-area" class="practice-input-area hidden">
+            <input
+              type="text"
+              id="practice-input"
+              class="practice-input"
+              placeholder="Skriv ordet här..."
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+            <button id="btn-check" class="btn btn-primary btn-large">
+              Kolla
+            </button>
+          </div>
+
+          <!-- Paper mode: reveal -->
+          <div id="practice-paper-area" class="practice-paper-area hidden">
+            <p class="paper-instruction">
+              Skriv på pappret, tryck sedan:
+            </p>
+            <button id="btn-reveal" class="btn btn-primary btn-large">
+              Visa rätt svar
+            </button>
+          </div>
+
+          <!-- Feedback area (both modes) -->
+          <div id="feedback-area" class="feedback-area hidden">
+            <!-- Star animation container -->
+            <div id="star-container" class="star-container hidden"></div>
+
+            <!-- Diff display -->
+            <div id="diff-display" class="diff-display hidden">
+              <p class="feedback-label">Nära! Kolla skillnaden:</p>
+              <div id="diff-chars" class="diff-chars"></div>
+              <p class="feedback-correct-label">Rätt svar:</p>
+              <p id="feedback-correct-word" class="feedback-correct-word"></p>
+            </div>
+
+            <!-- Revealed word (paper mode) -->
+            <div id="reveal-display" class="reveal-display hidden">
+              <p id="revealed-word" class="revealed-word"></p>
+            </div>
+
+            <!-- Paper self-assessment -->
+            <div id="self-assess" class="self-assess hidden">
+              <button id="btn-self-correct" class="btn-assess btn-assess-correct">
+                <img src="assets/star.svg" alt="" class="assess-star" />
+                Jag fick rätt!
+              </button>
+              <button id="btn-self-wrong" class="btn-assess btn-assess-retry">
+                Jag behöver öva mer
+              </button>
+            </div>
+
+            <!-- Navigation buttons -->
+            <div id="practice-nav" class="practice-nav hidden">
+              <button id="btn-try-again" class="btn btn-secondary">
+                Försök igen
+              </button>
+              <button id="btn-next" class="btn btn-primary">Nästa</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== VIEW: SUMMARY ===== -->
+      <section id="view-summary" class="view">
+        <header class="app-header">
+          <h1>Resultat</h1>
+        </header>
+
+        <div class="content centered">
+          <div id="summary-stars" class="summary-stars"></div>
+          <p id="summary-text" class="summary-text"></p>
+          <p id="summary-message" class="summary-message"></p>
+          <button id="btn-back-home" class="btn btn-primary btn-large">
+            Tillbaka till start
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== VIEW: SETTINGS ===== -->
+      <section id="view-settings" class="view">
+        <header class="app-header">
+          <button class="btn-back" data-navigate="home" aria-label="Tillbaka">
+            &larr;
+          </button>
+          <h1>Inställningar</h1>
+        </header>
+
+        <div class="content">
+          <div class="form-group">
+            <label for="settings-apikey">OpenAI API-nyckel</label>
+            <div class="input-row">
+              <input
+                type="password"
+                id="settings-apikey"
+                placeholder="sk-..."
+                autocomplete="off"
+              />
+              <button id="btn-test-key" class="btn btn-secondary btn-small">
+                Testa
+              </button>
+            </div>
+            <p id="apikey-status" class="field-status"></p>
+          </div>
+
+          <div class="form-group">
+            <label for="settings-voice">TTS-röst</label>
+            <select id="settings-voice">
+              <option value="alloy">Alloy</option>
+              <option value="ash">Ash</option>
+              <option value="coral">Coral</option>
+              <option value="echo">Echo</option>
+              <option value="fable">Fable</option>
+              <option value="nova" selected>Nova</option>
+              <option value="onyx">Onyx</option>
+              <option value="sage">Sage</option>
+              <option value="shimmer">Shimmer</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="settings-model">TTS-modell</label>
+            <select id="settings-model">
+              <option value="gpt-4o-mini-tts" selected>
+                gpt-4o-mini-tts (rekommenderad)
+              </option>
+              <option value="tts-1">tts-1</option>
+              <option value="tts-1-hd">tts-1-hd</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="settings-language">Standardspråk för nya listor</label>
+            <select id="settings-language">
+              <option value="sv">Svenska</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+          <button id="btn-save-settings" class="btn btn-primary btn-large">
+            Spara
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
